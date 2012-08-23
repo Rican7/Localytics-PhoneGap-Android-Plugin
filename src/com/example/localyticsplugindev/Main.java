@@ -5,6 +5,7 @@ import android.view.Menu;
 
 import org.apache.cordova.*;
 
+import com.blennd.localyticsplugin.PhoneGapApp;
 import com.localytics.android.*;
 
 public class Main extends DroidGap {
@@ -16,12 +17,12 @@ public class Main extends DroidGap {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.loadUrl("file:///android_asset/www/index.html");
- 
-        // Create a new localytics session
-		this.localyticsSession = new LocalyticsSession(
-				this.getApplicationContext(), // Context used to access device resources
-				"APP KEY FROM STEP 2" // Key generated on the webservice
-		);
+        
+        // Let's get a reference to our application context
+        PhoneGapApp appContext = (PhoneGapApp) this.getApplicationContext();
+        
+        // Let's get a reference to our Localytics Session object
+        this.localyticsSession = appContext.getLocalyticsSession();
 
 		// Open the session and upload any initialized session data
 		this.localyticsSession.open();
