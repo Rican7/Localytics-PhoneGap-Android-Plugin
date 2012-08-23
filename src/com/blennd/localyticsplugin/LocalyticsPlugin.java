@@ -167,7 +167,7 @@ public final class LocalyticsPlugin extends Plugin {
 	 */
 	private void tagEvent(String eventName, JSONArray options) {
 		// Let's convert the JSONArray of options to a Map of key:value pairs to match the Localytics API
-		Map<String,String> eventOptions = (Map) options;
+		Map<String,String> eventOptions = (Map) options; // TODO: Actually convert this properly
 		
 		// Call the Localytics API
 		this.localyticsSession.tagEvent(eventName, eventOptions);
