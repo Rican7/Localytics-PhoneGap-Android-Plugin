@@ -5,11 +5,17 @@
 		<script src="behavior.js"></script>
 	</head>
 	<body>
-		<h1>Test Body</h1>
-		<p>This is a test. Woot!</p>
-		<ul>
-			<li><a href="#" id="event-test">Event Test?</a></li>
-			<li><a href="#" id="yup">Yup!</a></li>
-		</ul>
+		<div id="main-page">
+			<h1>Test Body</h1>
+			<p>This is a test. Woot!</p>
+			<ul>
+				<li><a href="#" id="event-test" onclick="ghettoTestFunction(false);">Event Test?</a></li>
+				<li><a href="#" id="yup" onclick="ghettoTestFunction(false);">Yup!</a></li>
+			</ul>
+		</div>
+		<div id="about-page">
+			<p>Trevor Suarez wrote this plugin.</p>
+			<a href="#" id="back-home" onclick="ghettoTestFunction(true);">&quot;Back&quot; ;)</a>
+		</div>
 	</body>
 </html>
