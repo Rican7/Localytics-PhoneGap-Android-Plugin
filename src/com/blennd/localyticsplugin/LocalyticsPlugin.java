@@ -10,6 +10,8 @@
 package com.blennd.localyticsplugin;
 
 import java.util.Map;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import org.apache.cordova.api.Plugin;
 import org.apache.cordova.api.PluginResult;
@@ -87,7 +89,7 @@ public final class LocalyticsPlugin extends Plugin {
 			}
 			else if (action.equals("tagEvent")) {
 				// Tags an event
-				this.tagEvent(args.getString(0), args);
+				this.tagEvent(args.getJSONObject(0));
 				
 				// Return an OK result with a useful message
 				return new PluginResult(PluginResult.Status.OK, "Localytics event has been tagged");
@@ -165,9 +167,44 @@ public final class LocalyticsPlugin extends Plugin {
 	/**
 	 * Private tagScreen method to tag a screen/view in analytics
 	 */
-	private void tagEvent(String eventName, JSONArray options) {
-		// Let's convert the JSONArray of options to a Map of key:value pairs to match the Localytics API
-		Map<String,String> eventOptions = (Map) options; // TODO: Actually convert this properly
+	private void tagEvent(JSONObject options) {
+		// Declare some variables
+		String eventName = null;
+		Map<String,String> eventOptions = null;
+		
+		try {
+			// Get the event name string from the JSONObject
+			eventName = options.getString(EVENT_NAME_STRING);
+			
+			// Remove the event name key:value pair from the JSONObject to reduce redundancy
+			options.remove(EVENT_NAME_STRING);
+			
+			// Let's convert the JSONArray of options to a Map of key:value pairs to match the Localytics API
+			// First, create a new HashMap with a size matching the JSONObject
+			eventOptions = new HashMap<String,String>(options.length());
+			
+			// Create an iterator of all the JSONObject keys
+			Iterator<?> keyIter = options.keys(); // Since the JSON Object could technically return any type, let's infer a generic
+			
+			// Loop through each item in the JSONArray and add it to our eventOptions Map
+			while (keyIter.hasNext()) {
+				// Get the key of the iterator
+				Object objKey = keyIter.next(); // Use a generic "Object", as we aren't positive that the "next" will be a string
+				
+				// If the Object IS a string
+				if (objKey instanceof String) {
+					// Get the value of the object of the newly received key in the JSON Object
+					String objValue = options.getString(objKey.toString());
+					
+					// Put the key:value pair in the Map
+					eventOptions.put(objKey.toString(), objValue);
+				}
+			}
+		}
+		catch(JSONException e) {
+			// Log our exception
+			Log.d(LOG_TAG, "A JSONException has been called");
+		}
 		
 		// Call the Localytics API
 		this.localyticsSession.tagEvent(eventName, eventOptions);
@@ -175,5 +212,4 @@ public final class LocalyticsPlugin extends Plugin {
 		// Log our API call
 		Log.d(LOG_TAG, "Localytics API Call: tagEvent WITH Name: " + eventName + " and OPTIONS: " + eventOptions.toString());
 	}
-	
 }
